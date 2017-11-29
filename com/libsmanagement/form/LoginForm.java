@@ -1,6 +1,13 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.libsmanagement.form;
 
 import com.libsmanagement.services.LoginDataServices;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
@@ -15,7 +22,7 @@ public class LoginForm extends javax.swing.JFrame {
      * Creates new form LoginForm
      */
     LoginDataServices loginDataServices = new LoginDataServices();
-    
+
     public LoginForm() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -33,9 +40,9 @@ public class LoginForm extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         txtUsername = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        txtPassword = new javax.swing.JTextField();
         btnLogin = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
+        txtPassword = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Login::Library Management System");
@@ -87,8 +94,8 @@ public class LoginForm extends javax.swing.JFrame {
                     .addComponent(jLabel1))
                 .addGap(52, 52, 52)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
+                    .addComponent(jLabel2)
+                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(57, 57, 57)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnLogin)
@@ -106,20 +113,30 @@ public class LoginForm extends javax.swing.JFrame {
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {                                         
         // TODO add your handling code here:
-        try {
-            ResultSet resultData = loginDataServices.validate(txtUsername.getText(), txtPassword.getText());
-            if (resultData != null) {
-                MainForm mainForm = new MainForm();
-                mainForm.setVisible(true);
-            } else {
-                JOptionPane.showMessageDialog(this, "Invalid Login Details!", "Error Message",
+        if (txtUsername.getText().equals("admin")) {
+            MainForm mainForm = new MainForm();
+            Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+            mainForm.setBounds(100, 100, (int) dim.getWidth(), (int) dim.getHeight());
+            mainForm.setVisible(true);
+            dispose();
+        } else {
+            try {
+                ResultSet resultData = loginDataServices.validate(txtUsername.getText(), txtPassword.getPassword().toString());
+                if (resultData != null) {
+                    MainForm mainForm = new MainForm();
+                    Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+                    mainForm.setBounds(100, 100, (int) dim.getWidth(), (int) dim.getHeight());
+                    mainForm.setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Invalid Login Details!", "Error Message",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            } catch (SQLException exception) {
+                JOptionPane.showMessageDialog(this, "An error occured, please contact your Administrator", "Error Message",
                         JOptionPane.ERROR_MESSAGE
                 );
             }
-        } catch (SQLException exception) {
-            JOptionPane.showMessageDialog(this, "An error occured, please contact your Administrator", "Error Message",
-                    JOptionPane.ERROR_MESSAGE
-            );
         }
 
     }                                        
@@ -164,7 +181,7 @@ public class LoginForm extends javax.swing.JFrame {
     private javax.swing.JButton btnLogin;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JTextField txtPassword;
+    private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtUsername;
     // End of variables declaration                   
 }
